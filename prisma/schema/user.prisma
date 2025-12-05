@@ -1,0 +1,27 @@
+model User {
+    id                 String     @id @default(uuid())
+    email              String     @unique
+    firstName          String
+    lastName           String
+    password           String
+    phoneNumber        String?
+    profilePhoto       String?
+    address            String?
+    gender             Gender?
+    dateOfBirth        DateTime?
+    nationality        String?
+    passportNumber     String?
+    passportExpiryDate DateTime?
+    isEmailVerified    Boolean    @default(false)
+    isDeleted          Boolean    @default(false)
+    role               UserRole   @default(TRAVELLER)
+    status             UserStatus @default(ACTIVE)
+    createdAt          DateTime   @default(now())
+    updatedAt          DateTime   @updatedAt
+
+    // Relations
+    bookings           Booking[]
+
+    @@map("users")
+    settings Setting[]
+}

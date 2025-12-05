@@ -1,0 +1,75 @@
+import { UserRole } from "@prisma/client";
+import express from "express";
+import auth from "../../middlewares/auth.middleware";
+import validateRequest from "../../middlewares/validateRequest";
+import { AuthController } from "./auth.controller";
+import { AuthValidation } from "./auth.validation";
+
+const router = express.Router();
+
+router.post(
+  "/initiate-registration",
+  validateRequest(AuthValidation.initiateRegistration),
+  AuthController.initiateRegistration
+);
+
+router.post(
+  "/verify-registration-email",
+  validateRequest(AuthValidation.verifyEmailForRegistration),
+  AuthController.verifyEmailForRegistration
+);
+
+router.post(
+  "/complete-registration",
+  validateRequest(AuthValidation.completeRegistration),
+  AuthController.completeRegistration
+);
+
+router.post(
+  "/verify-email",
+  validateRequest(AuthValidation.verifyEmail),
+  AuthController.verifyEmail
+);
+
+router.post(
+  "/login",
+  validateRequest(AuthValidation.loginUser),
+  AuthController.loginUser
+);
+
+router.post("/refresh-token", AuthController.refreshToken);
+
+router.post(
+  "/change-password",
+  auth(UserRole.ADMIN, UserRole.AGENT, UserRole.TRAVELLER),
+  validateRequest(AuthValidation.changePassword),
+  AuthController.changePassword
+);
+
+router.post(
+  "/forgot-password",
+  validateRequest(AuthValidation.forgotPassword),
+  AuthController.forgotPassword
+);
+
+router.post(
+  "/reset-password",
+  validateRequest(AuthValidation.resetPassword),
+  AuthController.resetPassword
+);
+
+router.post(
+  "/resend-otp",
+  validateRequest(AuthValidation.resendOTP),
+  AuthController.resendOTP
+);
+
+router.get("/me", AuthController.getMe);
+
+router.post(
+  "/logout",
+  auth(UserRole.ADMIN, UserRole.AGENT, UserRole.TRAVELLER),
+  AuthController.logout
+);
+
+export const AuthRoutes = router;

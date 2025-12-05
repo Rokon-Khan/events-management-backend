@@ -1,0 +1,11 @@
+model OtpLog  {
+    id          String   @id @default(uuid())
+    email       String  
+    purpose     String
+    sentAt      DateTime @default(now())
+    ip          String?
+    success     Boolean
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
