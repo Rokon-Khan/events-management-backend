@@ -1,9 +1,13 @@
-import { BookingStatus, PaymentStatus, PrismaClient } from "@prisma/client";
+import { PaymentStatus, PrismaClient } from "@prisma/client";
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
-import { SSLService } from "../sslcommerze/sslCommerz.service";
 import { StripeService } from "../stripe/stripe.service";
-import { IPaymentCallback, IPaymentInit, IStripePaymentIntent, IStripeCheckoutSession } from "./payment.interface";
+import {
+  IPaymentCallback,
+  IPaymentInit,
+  IStripeCheckoutSession,
+  IStripePaymentIntent,
+} from "./payment.interface";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +26,7 @@ const initiatePayment = async (payload: IPaymentInit) => {
   }
 
   const transactionId = `TXN-${Date.now()}-${booking.id.slice(-6)}`;
-  const paymentMethod = payload.paymentMethod || 'sslcommerz';
+  const paymentMethod = payload.paymentMethod || "sslcommerz";
 
   // Create payment record
   await prisma.payment.create({
@@ -31,15 +35,15 @@ const initiatePayment = async (payload: IPaymentInit) => {
       transactionId,
       amount: payload.amount,
       paymentStatus: PaymentStatus.PENDING,
-      paymentMethod: paymentMethod === 'stripe' ? 'Stripe' : 'SSLCommerz',
+      paymentMethod: paymentMethod === "stripe" ? "Stripe" : "SSLCommerz",
     },
   });
 
-  if (paymentMethod === 'stripe') {
+  if (paymentMethod === "stripe") {
     // Use Stripe for payment
     const paymentIntent = await StripeService.createPaymentIntent(
       payload.amount,
-      'usd',
+      "usd",
       {
         bookingId: payload.bookingId,
         transactionId,
@@ -139,13 +143,13 @@ const createStripePaymentIntent = async (payload: IStripePaymentIntent) => {
       transactionId,
       amount: payload.amount,
       paymentStatus: PaymentStatus.PENDING,
-      paymentMethod: 'Stripe',
+      paymentMethod: "Stripe",
     },
   });
 
   const paymentIntent = await StripeService.createPaymentIntent(
     payload.amount,
-    payload.currency || 'usd',
+    payload.currency || "usd",
     {
       bookingId: payload.bookingId,
       transactionId,
@@ -182,14 +186,14 @@ const createStripeCheckoutSession = async (payload: IStripeCheckoutSession) => {
       transactionId,
       amount: payload.amount,
       paymentStatus: PaymentStatus.PENDING,
-      paymentMethod: 'Stripe',
+      paymentMethod: "Stripe",
     },
   });
 
   const lineItems = [
     {
       price_data: {
-        currency: payload.currency || 'usd',
+        currency: payload.currency || "usd",
         product_data: {
           name: payload.productName,
         },
@@ -218,7 +222,7 @@ const createStripeCheckoutSession = async (payload: IStripeCheckoutSession) => {
 
 const handleStripeWebhook = async (sessionId: string) => {
   const session = await StripeService.retrieveCheckoutSession(sessionId);
-  
+
   if (!session.metadata?.transactionId) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Invalid session metadata");
   }
@@ -232,7 +236,7 @@ const handleStripeWebhook = async (sessionId: string) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Payment not found!");
   }
 
-  if (session.payment_status === 'paid') {
+  if (session.payment_status === "paid") {
     await prisma.$transaction(async (tx) => {
       // Update payment
       await tx.payment.update({

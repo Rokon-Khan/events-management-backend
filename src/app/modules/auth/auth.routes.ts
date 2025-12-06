@@ -41,7 +41,7 @@ router.post("/refresh-token", AuthController.refreshToken);
 
 router.post(
   "/change-password",
-  auth(UserRole.ADMIN, UserRole.AGENT, UserRole.TRAVELLER),
+  auth(UserRole.ADMIN, UserRole.USER, UserRole.HOST),
   validateRequest(AuthValidation.changePassword),
   AuthController.changePassword
 );
@@ -68,7 +68,7 @@ router.get("/me", AuthController.getMe);
 
 router.post(
   "/logout",
-  auth(UserRole.ADMIN, UserRole.AGENT, UserRole.TRAVELLER),
+  auth(UserRole.ADMIN, UserRole.USER, UserRole.HOST),
   AuthController.logout
 );
 

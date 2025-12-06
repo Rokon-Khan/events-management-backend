@@ -1,7 +1,7 @@
 enum UserRole {
     ADMIN
-    TRAVELLER
-    AGENT
+    USER
+    HOST
 }
 
 enum UserStatus {
@@ -15,14 +15,6 @@ enum Gender {
     MALE
     FEMALE
     OTHER
-}
-
-enum BookingStatus {
-    PENDING
-    CONFIRMED
-    CANCELLED
-    FAILED
-    REFUNDED
 }
 
 enum PaymentStatus {

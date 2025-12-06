@@ -11,7 +11,7 @@ async function bootstrap() {
     // Start the server
     server = app.listen(config.port, () => {
       console.log(
-        `🚀 Air Ticketing Server is running on http://localhost:${config.port}`
+        `🚀 Event Management Server is running on http://localhost:${config.port}`
       );
     });
 

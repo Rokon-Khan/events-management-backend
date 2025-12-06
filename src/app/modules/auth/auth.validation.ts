@@ -16,12 +16,8 @@ const verifyEmailForRegistration = z.object({
 const completeRegistration = z.object({
   body: z.object({
     email: z.string().email("Invalid email format"),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    fullName: z.string().min(1, "Full name is required"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    phoneNumber: z.string().optional(),
-    gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
-    dateOfBirth: z.string().optional(),
   }),
 });
 

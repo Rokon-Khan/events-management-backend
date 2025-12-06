@@ -54,16 +54,12 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
     select: {
       id: true,
       email: true,
-      firstName: true,
-      lastName: true,
+      fullName: true,
       phoneNumber: true,
       profilePhoto: true,
       role: true,
       gender: true,
       dateOfBirth: true,
-      nationality: true,
-      passportNumber: true,
-      passportExpiryDate: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -122,17 +118,13 @@ const getMyProfile = async (user: IAuthUser) => {
     select: {
       id: true,
       email: true,
-      firstName: true,
-      lastName: true,
+      fullName: true,
       phoneNumber: true,
       profilePhoto: true,
       address: true,
       role: true,
       gender: true,
       dateOfBirth: true,
-      nationality: true,
-      passportNumber: true,
-      passportExpiryDate: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -176,13 +168,8 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
     ...updateData
   } = req.body;
 
-  // Convert date strings into proper Date objects
   if (updateData.dateOfBirth) {
     updateData.dateOfBirth = new Date(updateData.dateOfBirth);
-  }
-
-  if (updateData.passportExpiryDate) {
-    updateData.passportExpiryDate = new Date(updateData.passportExpiryDate);
   }
 
   const updatedUser = await prisma.user.update({
@@ -193,17 +180,13 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
     select: {
       id: true,
       email: true,
-      firstName: true,
-      lastName: true,
+      fullName: true,
       phoneNumber: true,
       profilePhoto: true,
       address: true,
       role: true,
       gender: true,
       dateOfBirth: true,
-      nationality: true,
-      passportNumber: true,
-      passportExpiryDate: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -223,17 +206,13 @@ const getUserById = async (id: string) => {
     select: {
       id: true,
       email: true,
-      firstName: true,
-      lastName: true,
+      fullName: true,
       phoneNumber: true,
       profilePhoto: true,
       address: true,
       role: true,
       gender: true,
       dateOfBirth: true,
-      nationality: true,
-      passportNumber: true,
-      passportExpiryDate: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,

@@ -12,7 +12,7 @@ router.get("/", auth(UserRole.ADMIN), userController.getAllFromDB);
 
 router.get(
   "/me",
-  auth(UserRole.ADMIN, UserRole.AGENT, UserRole.TRAVELLER),
+  auth(UserRole.ADMIN, UserRole.USER, UserRole.HOST),
   userController.getMyProfile
 );
 
@@ -27,9 +27,8 @@ router.patch(
 
 router.patch(
   "/update-my-profile",
-  auth(UserRole.ADMIN, UserRole.AGENT, UserRole.TRAVELLER),
+  auth(UserRole.ADMIN, UserRole.USER, UserRole.HOST),
   fileUploader.upload.single("profilePhoto"),
-
   validateRequest(userValidation.updateProfile),
   userController.updateMyProfile
 );

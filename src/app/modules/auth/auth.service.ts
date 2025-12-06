@@ -35,14 +35,9 @@ const initiateRegistration = async (payload: { email: string }) => {
 
 const completeRegistration = async (payload: {
   email: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   password: string;
-  phoneNumber?: string;
-  gender?: string;
-  dateOfBirth?: string;
 }) => {
-  // Check if email is verified
   const existingUser = await prisma.user.findUnique({
     where: { email: payload.email },
   });
@@ -51,7 +46,6 @@ const completeRegistration = async (payload: {
     throw new ApiError(httpStatus.BAD_REQUEST, "User already exists!");
   }
 
-  // Verify that email verification was completed (check if OTP was used)
   const hashedPassword = await bcrypt.hash(
     payload.password,
     Number(config.salt_round)
@@ -60,12 +54,8 @@ const completeRegistration = async (payload: {
   await prisma.user.create({
     data: {
       email: payload.email,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
+      fullName: payload.fullName,
       password: hashedPassword,
-      phoneNumber: payload.phoneNumber,
-      gender: payload.gender as any,
-      dateOfBirth: payload.dateOfBirth ? new Date(payload.dateOfBirth) : null,
       isEmailVerified: true,
     },
   });
@@ -299,17 +289,13 @@ const getMe = async (user: any) => {
     select: {
       id: true,
       email: true,
-      firstName: true,
-      lastName: true,
+      fullName: true,
       phoneNumber: true,
       profilePhoto: true,
       address: true,
       role: true,
       gender: true,
       dateOfBirth: true,
-      nationality: true,
-      passportNumber: true,
-      passportExpiryDate: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
