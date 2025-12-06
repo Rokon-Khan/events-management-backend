@@ -57,9 +57,14 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       fullName: true,
       phoneNumber: true,
       profilePhoto: true,
+      address: true,
+      bio: true,
+      interests: true,
       role: true,
       gender: true,
       dateOfBirth: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -122,9 +127,13 @@ const getMyProfile = async (user: IAuthUser) => {
       phoneNumber: true,
       profilePhoto: true,
       address: true,
+      bio: true,
+      interests: true,
       role: true,
       gender: true,
       dateOfBirth: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -157,7 +166,6 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
 
   req.body.profilePhoto = profilePhoto;
 
-  // Remove sensitive fields that shouldn't be updated
   const {
     email,
     password,
@@ -165,6 +173,8 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
     status,
     isEmailVerified,
     isDeleted,
+    pertcipatedEvents,
+    hostedEvents,
     ...updateData
   } = req.body;
 
@@ -184,9 +194,13 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
       phoneNumber: true,
       profilePhoto: true,
       address: true,
+      bio: true,
+      interests: true,
       role: true,
       gender: true,
       dateOfBirth: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -210,9 +224,13 @@ const getUserById = async (id: string) => {
       phoneNumber: true,
       profilePhoto: true,
       address: true,
+      bio: true,
+      interests: true,
       role: true,
       gender: true,
       dateOfBirth: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,

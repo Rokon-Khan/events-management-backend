@@ -1,19 +1,19 @@
 import { Server } from "http";
 import app from "./app";
-// import { connectRedis, disconnectRedis } from "./app/utils/redis.config";
+import { startEventStatusScheduler } from "./app/utils/eventStatusScheduler";
 import config from "./config";
 
 async function bootstrap() {
-  // This variable will hold our server instance
   let server: Server;
 
   try {
-    // Start the server
     server = app.listen(config.port, () => {
       console.log(
         `🚀 Event Management Server is running on http://localhost:${config.port}`
       );
     });
+
+    startEventStatusScheduler();
 
     // Function to gracefully shut down the server
     const exitHandler = () => {

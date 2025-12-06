@@ -2,11 +2,14 @@ model Event {
     id          String   @id @default(uuid())
     title       String
     description String
-    eventImage  String?
-    eventType   String
+    eventImage  String
+    eventCategory   String
     date        DateTime
+    time        String
     location    String
-    requiredParticipants Int @default(0)
+    minParticipants Int
+    maxParticipants Int
+    currentParticipants Int @default(0)
     joiningFee  Float    @default(0.0)
     status      EventStatus @default(OPEN) 
     createdAt   DateTime @default(now())

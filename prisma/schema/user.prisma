@@ -7,11 +7,11 @@ model User {
     profilePhoto       String?
     address            String?
     bio                String?
-    interests         String[]
+    interests          String[]
     gender             Gender?
     dateOfBirth        DateTime?
-    rating             Float?      @default(4.5)
-    reviewCount        Int?        @default(0)
+    pertcipatedEvents  Int        @default(0)
+    hostedEvents      Int        @default(0)
     role               UserRole   @default(USER)
     status             UserStatus @default(ACTIVE)
     isEmailVerified    Boolean    @default(false)

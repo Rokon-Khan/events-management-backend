@@ -24,6 +24,7 @@ enum EventStatus {
     ONGOING
     COMPLETED
     CANCELLED
+    CLOSED
 }
 
 enum PaymentStatus {

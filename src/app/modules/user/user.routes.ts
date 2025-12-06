@@ -29,6 +29,16 @@ router.patch(
   "/update-my-profile",
   auth(UserRole.ADMIN, UserRole.USER, UserRole.HOST),
   fileUploader.upload.single("profilePhoto"),
+  (req, res, next) => {
+    if (req.body.interests && typeof req.body.interests === "string") {
+      try {
+        req.body.interests = JSON.parse(req.body.interests);
+      } catch (e) {
+        req.body.interests = req.body.interests.split(",").map((item: string) => item.trim());
+      }
+    }
+    next();
+  },
   validateRequest(userValidation.updateProfile),
   userController.updateMyProfile
 );
