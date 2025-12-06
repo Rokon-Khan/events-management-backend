@@ -6,14 +6,18 @@ model User {
     phoneNumber        String?
     profilePhoto       String?
     address            String?
+    bio                String?
+    interests         String[]
     gender             Gender?
     dateOfBirth        DateTime?
+    rating             Float?      @default(4.5)
+    reviewCount        Int?        @default(0)
     role               UserRole   @default(USER)
     status             UserStatus @default(ACTIVE)
     isEmailVerified    Boolean    @default(false)
     isDeleted          Boolean    @default(false)
     createdAt          DateTime   @default(now())
     updatedAt          DateTime   @updatedAt
-
+    events            Event[]
     @@map("users")
 }

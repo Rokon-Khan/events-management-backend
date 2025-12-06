@@ -17,6 +17,15 @@ enum Gender {
     OTHER
 }
 
+enum EventStatus {
+    OPEN
+    FULL
+    UPCOMING
+    ONGOING
+    COMPLETED
+    CANCELLED
+}
+
 enum PaymentStatus {
     PENDING
     COMPLETED

@@ -11,8 +11,11 @@
     "postinstall": "prisma generate",
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
     "build": "tsc",
-    "generate": "npx prisma generate",
+    "build:fast": "node esbuild.config.js",
+    "prisma:generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
+    "migrate:reset": "npx prisma migrate reset",
+    "seed": "ts-node-dev ./src/app/utils/seed.ts",
     "start": "node dist/server.js"
   },
   "dependencies": {
