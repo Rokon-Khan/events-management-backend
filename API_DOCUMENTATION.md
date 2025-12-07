@@ -190,6 +190,43 @@ Rules:
 ✅ Support for event images
 ✅ Automatic old image deletion
 
+## Review Module
+
+### Create Review
+**POST** `/api/review/`
+Headers: `Authorization: Bearer <token>`
+Roles: `USER`, `HOST`, `ADMIN`
+
+```json
+{
+  "rating": 4.5,
+  "comment": "Great event host!",
+  "eventId": "event-uuid"
+}
+```
+
+Rules:
+- Rating must be between 0 and 5
+- User can review host only once per event
+- Host cannot review their own event
+- Auto-increments host's reviewCount
+
+### Get All Reviews
+**GET** `/api/review/`
+Query Parameters: `userId`, `eventId`, `rating`, `page`, `limit`
+
+### Get Host Statistics
+**GET** `/api/review/host/:hostId/stats`
+Returns: totalEvents, totalReviews, averageRating
+
+### Update Review
+**PATCH** `/api/review/:id`
+Roles: `ADMIN` or review owner
+
+### Delete Review
+**DELETE** `/api/review/:id`
+Roles: `ADMIN` only
+
 ## Environment Variables Required
 ```
 DATABASE_URL=

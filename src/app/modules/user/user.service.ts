@@ -65,6 +65,7 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       dateOfBirth: true,
       pertcipatedEvents: true,
       hostedEvents: true,
+      reviewCount: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -134,6 +135,7 @@ const getMyProfile = async (user: IAuthUser) => {
       dateOfBirth: true,
       pertcipatedEvents: true,
       hostedEvents: true,
+      reviewCount: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -175,6 +177,7 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
     isDeleted,
     pertcipatedEvents,
     hostedEvents,
+    reviewCount,
     ...updateData
   } = req.body;
 
@@ -201,6 +204,7 @@ const updateMyProfile = async (user: IAuthUser, req: Request) => {
       dateOfBirth: true,
       pertcipatedEvents: true,
       hostedEvents: true,
+      reviewCount: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
@@ -231,6 +235,7 @@ const getUserById = async (id: string) => {
       dateOfBirth: true,
       pertcipatedEvents: true,
       hostedEvents: true,
+      reviewCount: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,

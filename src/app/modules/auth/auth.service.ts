@@ -300,6 +300,7 @@ const getMe = async (user: any) => {
       dateOfBirth: true,
       pertcipatedEvents: true,
       hostedEvents: true,
+      reviewCount: true,
       status: true,
       isEmailVerified: true,
       createdAt: true,
