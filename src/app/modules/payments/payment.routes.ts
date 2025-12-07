@@ -8,33 +8,37 @@ import { PaymentValidation } from "./payment.validation";
 const router = express.Router();
 
 router.post(
-  "/initiate",
-  auth(UserRole.TRAVELLER, UserRole.AGENT, UserRole.ADMIN),
-  validateRequest(PaymentValidation.initiatePayment),
-  PaymentController.initiatePayment
+  "/",
+  auth(UserRole.USER, UserRole.HOST),
+  validateRequest(PaymentValidation.createPayment),
+  PaymentController.createPayment
 );
 
-// Stripe Payment Routes
-router.post(
-  "/stripe/payment-intent",
-  auth(UserRole.TRAVELLER, UserRole.AGENT, UserRole.ADMIN),
-  validateRequest(PaymentValidation.stripePaymentIntent),
-  PaymentController.createStripePaymentIntent
+router.get(
+  "/",
+  auth(UserRole.ADMIN, UserRole.HOST),
+  PaymentController.getAllPayments
 );
 
-router.post(
-  "/stripe/checkout-session",
-  auth(UserRole.TRAVELLER, UserRole.AGENT, UserRole.ADMIN),
-  validateRequest(PaymentValidation.stripeCheckoutSession),
-  PaymentController.createStripeCheckoutSession
+router.get(
+  "/:id",
+  auth(UserRole.ADMIN, UserRole.HOST),
+  PaymentController.getPaymentById
 );
 
-router.get("/stripe/success", PaymentController.stripeSuccess);
-router.get("/stripe/cancel", PaymentController.stripeCancel);
+router.patch(
+  "/:id/status",
+  auth(UserRole.ADMIN),
+  validateRequest(PaymentValidation.updatePaymentStatus),
+  PaymentController.updatePaymentStatus
+);
 
-// SSL Commerz Routes
-router.get("/success", PaymentController.paymentSuccess);
-router.get("/fail", PaymentController.paymentFail);
-router.get("/cancel", PaymentController.paymentCancel);
+router.delete(
+  "/:id",
+  auth(UserRole.ADMIN),
+  PaymentController.deletePayment
+);
+
+router.post("/stripe/webhook", PaymentController.stripeWebhook);
 
 export const PaymentRoutes = router;

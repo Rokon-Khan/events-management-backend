@@ -1,102 +1,93 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import catchAsync from "../../shared/catchAsync";
+import pick from "../../shared/pick";
 import sendResponse from "../../shared/sendResponse";
+import { IAuthUser } from "../../interfaces/common";
 import { PaymentService } from "./payment.service";
 
-const initiatePayment = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.initiatePayment(req.body);
+const createPayment = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const result = await PaymentService.createPayment(req.user as IAuthUser, req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Payment initiated successfully!",
+      data: result,
+    });
+  }
+);
+
+const getAllPayments = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const filters = pick(req.query, ["eventId", "userId", "paymentStatus"]);
+    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+    const result = await PaymentService.getAllPayments(req.user as IAuthUser, filters, options);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Payments retrieved successfully!",
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
+
+const getPaymentById = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const result = await PaymentService.getPaymentById(req.params.id, req.user as IAuthUser);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Payment retrieved successfully!",
+      data: result,
+    });
+  }
+);
+
+const updatePaymentStatus = catchAsync(async (req: Request, res: Response) => {
+  const result = await PaymentService.updatePaymentStatus(req.params.id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Payment initiated successfully!",
+    message: "Payment status updated successfully!",
     data: result,
   });
 });
 
-const paymentSuccess = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.handlePaymentCallback({
-    transactionId: req.query.transactionId as string,
-    amount: req.query.amount as string,
-    status: "success",
-  });
-
-  res.redirect(
-    `${process.env.CLIENT_URL}/payment/success?transactionId=${req.query.transactionId}`
-  );
-});
-
-const paymentFail = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.handlePaymentCallback({
-    transactionId: req.query.transactionId as string,
-    amount: req.query.amount as string,
-    status: "fail",
-  });
-
-  res.redirect(
-    `${process.env.CLIENT_URL}/payment/failed?transactionId=${req.query.transactionId}`
-  );
-});
-
-const paymentCancel = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.handlePaymentCallback({
-    transactionId: req.query.transactionId as string,
-    amount: req.query.amount as string,
-    status: "cancel",
-  });
-
-  res.redirect(
-    `${process.env.CLIENT_URL}/payment/cancelled?transactionId=${req.query.transactionId}`
-  );
-});
-
-const createStripePaymentIntent = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.createStripePaymentIntent(req.body);
+const deletePayment = catchAsync(async (req: Request, res: Response) => {
+  const result = await PaymentService.deletePayment(req.params.id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Stripe payment intent created successfully!",
+    message: "Payment deleted successfully!",
     data: result,
   });
 });
 
-const createStripeCheckoutSession = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.createStripeCheckoutSession(req.body);
+const stripeWebhook = catchAsync(async (req: Request, res: Response) => {
+  const paymentIntentId = req.body.data?.object?.id;
+  const result = await PaymentService.handleStripeWebhook(paymentIntentId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Stripe checkout session created successfully!",
-    data: result,
+    message: result.message,
+    data: null,
   });
-});
-
-const stripeSuccess = catchAsync(async (req: Request, res: Response) => {
-  const sessionId = req.query.session_id as string;
-  const result = await PaymentService.handleStripeWebhook(sessionId);
-
-  res.redirect(
-    `${process.env.CLIENT_URL}/payment/success?sessionId=${sessionId}`
-  );
-});
-
-const stripeCancel = catchAsync(async (req: Request, res: Response) => {
-  const transactionId = req.query.transaction_id as string;
-  
-  res.redirect(
-    `${process.env.CLIENT_URL}/payment/cancelled?transactionId=${transactionId}`
-  );
 });
 
 export const PaymentController = {
-  initiatePayment,
-  paymentSuccess,
-  paymentFail,
-  paymentCancel,
-  createStripePaymentIntent,
-  createStripeCheckoutSession,
-  stripeSuccess,
-  stripeCancel,
+  createPayment,
+  getAllPayments,
+  getPaymentById,
+  updatePaymentStatus,
+  deletePayment,
+  stripeWebhook,
 };

@@ -22,7 +22,7 @@ const createPaymentIntent = async (
   return paymentIntent;
 };
 
-const confirmPaymentIntent = async (paymentIntentId: string) => {
+const retrievePaymentIntent = async (paymentIntentId: string) => {
   const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
   return paymentIntent;
 };
@@ -52,7 +52,7 @@ const retrieveCheckoutSession = async (sessionId: string) => {
 
 export const StripeService = {
   createPaymentIntent,
-  confirmPaymentIntent,
+  retrievePaymentIntent,
   createCheckoutSession,
   retrieveCheckoutSession,
 };
