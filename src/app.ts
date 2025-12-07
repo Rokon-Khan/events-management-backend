@@ -1,13 +1,17 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, Request, Response } from "express";
+import pinoHttp from "pino-http";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import notFound from "./app/middlewares/notFound";
 import router from "./app/routes";
+import logger from "./app/utils/logger";
 import config from "./config";
-// import router from "./routes";
 
 const app: Application = express();
+
+// Pino HTTP logger
+app.use(pinoHttp({ logger }));
 
 app.use(
   cors({
@@ -38,8 +42,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1", router);
 
 app.get("/", (req: Request, res: Response) => {
+  logger.info("Health check endpoint accessed");
   res.send({
-    message: "Air Ticketing Server is running..",
+    message: "Event Management Server is running..",
     environment: config.node_env,
     uptime: process.uptime().toFixed(2) + " sec",
     timeStamp: new Date().toISOString(),

@@ -14,7 +14,12 @@ const auth = (...roles: string[]) => {
   ) => {
     try {
       let token = req.headers.authorization;
-      
+
+      // Strip "Bearer " prefix if present
+      if (token && token.startsWith("Bearer")) {
+        token = token.substring(7);
+      }
+
       // If no token in header, check cookies
       if (!token) {
         token = req.cookies?.accessToken;

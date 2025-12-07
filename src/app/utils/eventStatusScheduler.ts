@@ -2,25 +2,32 @@ import { EventStatus, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+import logger from "./logger";
+
 export const updateExpiredEvents = async () => {
   try {
     const now = new Date();
-    
-    await prisma.event.updateMany({
+
+    const result = await prisma.event.updateMany({
       where: {
         date: { lt: now },
-        status: { in: [EventStatus.OPEN, EventStatus.ONGOING, EventStatus.UPCOMING] },
+        status: {
+          in: [EventStatus.OPEN, EventStatus.ONGOING, EventStatus.UPCOMING],
+        },
       },
       data: { status: EventStatus.CLOSED },
     });
-    
-    console.log("Event statuses updated successfully");
-  } catch (error) {
-    console.error("Error updating event statuses:", error);
+
+    if (result.count > 0) {
+      logger.info(`Event statuses updated: ${result.count} events closed`);
+    }
+  } catch (error: any) {
+    logger.error("Error updating event statuses:", error);
   }
 };
 
 export const startEventStatusScheduler = () => {
+  logger.info("Event status scheduler started (runs every 60 seconds)");
   setInterval(updateExpiredEvents, 60000);
   updateExpiredEvents();
 };

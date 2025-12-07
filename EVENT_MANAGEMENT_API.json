@@ -244,14 +244,16 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "value": "Bearer {{token}}",
+                "type": "text"
               }
             ],
             "url": {
               "raw": "{{baseUrl}}/user/me",
               "host": ["{{baseUrl}}"],
               "path": ["user", "me"]
-            }
+            },
+            "description": "Make sure to set {{token}} variable after login"
           }
         },
         {

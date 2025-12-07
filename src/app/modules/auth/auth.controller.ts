@@ -34,13 +34,13 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     secure: true,
     httpOnly: true,
     sameSite: "none",
-    maxAge: Number(process.env.EXPIRES_IN) || 86400000, // 24 hours
+    maxAge: Number(process.env.EXPIRES_IN) || 86400, // 24 hours
   });
   res.cookie("refreshToken", refreshToken, {
     secure: true,
     httpOnly: true,
     sameSite: "none",
-    maxAge: Number(process.env.REFRESH_TOKEN_EXPIRES_IN) || 604800000, // 7 days
+    maxAge: Number(process.env.REFRESH_TOKEN_EXPIRES_IN) || 604800, // 7 days
   });
 
   sendResponse(res, {
