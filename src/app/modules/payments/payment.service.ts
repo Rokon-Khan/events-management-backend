@@ -17,6 +17,10 @@ const createPayment = async (user: IAuthUser, payload: any) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Event not found!");
   }
 
+  if (!user?.id) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "User not authenticated!");
+  }
+
   const transactionId = `STRIPE-${Date.now()}-${user.id.slice(-6)}`;
 
   const payment = await prisma.payment.create({
@@ -50,7 +54,7 @@ const createPayment = async (user: IAuthUser, payload: any) => {
     {
       paymentId: payment.id,
       transactionId,
-      userId: user.id,
+      userId: user?.id,
       eventId: payload.eventId,
     }
   );
@@ -62,15 +66,19 @@ const createPayment = async (user: IAuthUser, payload: any) => {
   };
 };
 
-const getAllPayments = async (user: IAuthUser, params: any, options: IPaginationOptions) => {
+const getAllPayments = async (
+  user: IAuthUser,
+  params: any,
+  options: IPaginationOptions
+) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { ...filterData } = params;
 
   const andConditions: Prisma.PaymentWhereInput[] = [];
 
-  if (user.role === UserRole.HOST) {
+  if (user?.role === UserRole.HOST) {
     const hostEvents = await prisma.event.findMany({
-      where: { userId: user.id },
+      where: { userId: user?.id },
       select: { id: true },
     });
     const eventIds = hostEvents.map((e) => e.id);
@@ -148,8 +156,11 @@ const getPaymentById = async (id: string, user: IAuthUser) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Payment not found!");
   }
 
-  if (user.role === UserRole.HOST && payment.event.userId !== user.id) {
-    throw new ApiError(httpStatus.FORBIDDEN, "You can only view payments for your events!");
+  if (user?.role === UserRole.HOST && payment.event.userId !== user?.id) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "You can only view payments for your events!"
+    );
   }
 
   return payment;
@@ -205,10 +216,15 @@ const deletePayment = async (id: string) => {
 };
 
 const handleStripeWebhook = async (paymentIntentId: string) => {
-  const paymentIntent = await StripeService.retrievePaymentIntent(paymentIntentId);
+  const paymentIntent = await StripeService.retrievePaymentIntent(
+    paymentIntentId
+  );
 
   if (!paymentIntent.metadata?.paymentId) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid payment intent metadata");
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Invalid payment intent metadata"
+    );
   }
 
   const payment = await prisma.payment.findUnique({
