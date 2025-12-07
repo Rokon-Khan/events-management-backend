@@ -4,37 +4,13 @@ import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import { AuthServices } from "./auth.service";
 
-const initiateRegistration = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthServices.initiateRegistration(req.body);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "OTP sent successfully!",
-    data: result,
-  });
-});
-
-const verifyEmailForRegistration = catchAsync(
-  async (req: Request, res: Response) => {
-    const result = await AuthServices.verifyEmailForRegistration(req.body);
-
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Email verified successfully!",
-      data: result,
-    });
-  }
-);
-
-const completeRegistration = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthServices.completeRegistration(req.body);
+const registration = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthServices.registration(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Registration completed successfully!",
+    message: "Registration successful! Please verify your email.",
     data: result,
   });
 });
@@ -171,9 +147,7 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const AuthController = {
-  initiateRegistration,
-  verifyEmailForRegistration,
-  completeRegistration,
+  registration,
   verifyEmail,
   loginUser,
   refreshToken,

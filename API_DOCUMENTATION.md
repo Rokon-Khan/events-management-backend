@@ -6,30 +6,30 @@ Complete event management system with user authentication, profile management, a
 ## Authentication Flow
 
 ### 1. User Registration
-**POST** `/api/auth/initiate-registration`
+**POST** `/api/auth/registration`
 ```json
 {
-  "email": "user@example.com"
+  "email": "user@example.com",
+  "fullName": "John Doe",
+  "password": "password123",
+  "role": "HOST"
 }
 ```
-Response: OTP sent to email
+Response: User created and OTP sent to email
 
-**POST** `/api/auth/verify-registration-email`
+Notes:
+- `role` is optional, defaults to "USER" if not provided
+- Available roles: "USER", "HOST", "ADMIN"
+- OTP is automatically sent after registration
+
+**POST** `/api/auth/verify-email`
 ```json
 {
   "email": "user@example.com",
   "otp": "123456"
 }
 ```
-
-**POST** `/api/auth/complete-registration`
-```json
-{
-  "email": "user@example.com",
-  "fullName": "John Doe",
-  "password": "password123"
-}
-```
+Response: Email verified successfully
 
 ### 2. User Login
 **POST** `/api/auth/login`
@@ -165,7 +165,8 @@ Rules:
 ## Features Implemented
 
 ### User Module
-✅ Registration with email OTP verification
+✅ Single-step registration with optional role selection
+✅ Email OTP verification
 ✅ Login with email/password
 ✅ Profile management with image upload
 ✅ Auto-increment participated events counter

@@ -14,29 +14,11 @@ import { storeOTP, verifyOTP } from "../otp/otp.serice";
 
 const prisma = new PrismaClient();
 
-const initiateRegistration = async (payload: { email: string }) => {
-  const existingUser = await prisma.user.findUnique({
-    where: { email: payload.email },
-  });
-
-  if (existingUser) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "User already exists!");
-  }
-
-  const otp = generateOTP();
-  await storeOTP(payload.email, "email_verification", otp, 300); // 5 minutes
-
-  await sendEmailVerification(payload.email, otp);
-
-  return {
-    message: "OTP sent to your email. Please verify to continue registration.",
-  };
-};
-
-const completeRegistration = async (payload: {
+const registration = async (payload: {
   email: string;
   fullName: string;
   password: string;
+  role?: string;
 }) => {
   const existingUser = await prisma.user.findUnique({
     where: { email: payload.email },
@@ -56,34 +38,28 @@ const completeRegistration = async (payload: {
       email: payload.email,
       fullName: payload.fullName,
       password: hashedPassword,
-      isEmailVerified: true,
+      role: payload.role as any || "USER",
     },
   });
 
-  return { message: "Registration completed successfully!" };
-};
-
-const verifyEmailForRegistration = async (payload: {
-  email: string;
-  otp: string;
-}) => {
-  const isValidOTP = await verifyOTP(
-    payload.email,
-    "email_verification",
-    payload.otp
-  );
-
-  if (!isValidOTP) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid or expired OTP!");
-  }
+  const otp = generateOTP();
+  await storeOTP(payload.email, "email_verification", otp, 300);
+  await sendEmailVerification(payload.email, otp);
 
   return {
-    message:
-      "Email verified successfully! You can now complete your registration.",
+    message: "Registration successful! OTP sent to your email for verification.",
   };
 };
 
 const verifyEmail = async (payload: { email: string; otp: string }) => {
+  const user = await prisma.user.findUnique({
+    where: { email: payload.email },
+  });
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
   const isValidOTP = await verifyOTP(
     payload.email,
     "email_verification",
@@ -335,9 +311,7 @@ const resendOTP = async (payload: {
 };
 
 export const AuthServices = {
-  initiateRegistration,
-  verifyEmailForRegistration,
-  completeRegistration,
+  registration,
   verifyEmail,
   loginUser,
   refreshToken,

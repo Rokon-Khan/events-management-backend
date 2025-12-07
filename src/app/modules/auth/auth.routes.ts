@@ -8,21 +8,9 @@ import { AuthValidation } from "./auth.validation";
 const router = express.Router();
 
 router.post(
-  "/initiate-registration",
-  validateRequest(AuthValidation.initiateRegistration),
-  AuthController.initiateRegistration
-);
-
-router.post(
-  "/verify-registration-email",
-  validateRequest(AuthValidation.verifyEmailForRegistration),
-  AuthController.verifyEmailForRegistration
-);
-
-router.post(
-  "/complete-registration",
-  validateRequest(AuthValidation.completeRegistration),
-  AuthController.completeRegistration
+  "/registration",
+  validateRequest(AuthValidation.registration),
+  AuthController.registration
 );
 
 router.post(

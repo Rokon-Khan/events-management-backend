@@ -1,23 +1,11 @@
 import { z } from "zod";
 
-const initiateRegistration = z.object({
-  body: z.object({
-    email: z.string().email("Invalid email format"),
-  }),
-});
-
-const verifyEmailForRegistration = z.object({
-  body: z.object({
-    email: z.string().email("Invalid email format"),
-    otp: z.string().length(6, "OTP must be 6 digits"),
-  }),
-});
-
-const completeRegistration = z.object({
+const registration = z.object({
   body: z.object({
     email: z.string().email("Invalid email format"),
     fullName: z.string().min(1, "Full name is required"),
     password: z.string().min(6, "Password must be at least 6 characters"),
+    role: z.enum(["USER", "HOST", "ADMIN"]).optional(),
   }),
 });
 
@@ -68,9 +56,7 @@ const resendOTP = z.object({
 });
 
 export const AuthValidation = {
-  initiateRegistration,
-  verifyEmailForRegistration,
-  completeRegistration,
+  registration,
   verifyEmail,
   loginUser,
   changePassword,
