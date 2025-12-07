@@ -33,3 +33,10 @@ enum PaymentStatus {
     FAILED
     REFUNDED
 }
+enum paymentMethod {
+    CREDIT_CARD
+    DEBIT_CARD
+    STRIPE
+    BANK_TRANSFER
+    CASH
+}

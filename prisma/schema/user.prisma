@@ -21,5 +21,6 @@ model User {
     updatedAt          DateTime   @updatedAt
     events            Event[]
     reviews           Review[]
+    payments          Payment[]
     @@map("users")
 }
