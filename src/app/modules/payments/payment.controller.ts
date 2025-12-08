@@ -1,14 +1,24 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import Stripe from "stripe";
+import config from "../../../config";
+import { IAuthUser } from "../../interfaces/common";
 import catchAsync from "../../shared/catchAsync";
 import pick from "../../shared/pick";
 import sendResponse from "../../shared/sendResponse";
-import { IAuthUser } from "../../interfaces/common";
+import logger from "../../utils/logger";
 import { PaymentService } from "./payment.service";
+
+const stripe = new Stripe(config.stripe.secretKey, {
+  apiVersion: "2025-11-17.clover",
+});
 
 const createPayment = catchAsync(
   async (req: Request & { user?: IAuthUser }, res: Response) => {
-    const result = await PaymentService.createPayment(req.user as IAuthUser, req.body);
+    const result = await PaymentService.createPayment(
+      req.user as IAuthUser,
+      req.body
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
@@ -24,7 +34,11 @@ const getAllPayments = catchAsync(
     const filters = pick(req.query, ["eventId", "userId", "paymentStatus"]);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-    const result = await PaymentService.getAllPayments(req.user as IAuthUser, filters, options);
+    const result = await PaymentService.getAllPayments(
+      req.user as IAuthUser,
+      filters,
+      options
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -38,7 +52,10 @@ const getAllPayments = catchAsync(
 
 const getPaymentById = catchAsync(
   async (req: Request & { user?: IAuthUser }, res: Response) => {
-    const result = await PaymentService.getPaymentById(req.params.id, req.user as IAuthUser);
+    const result = await PaymentService.getPaymentById(
+      req.params.id,
+      req.user as IAuthUser
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -50,7 +67,10 @@ const getPaymentById = catchAsync(
 );
 
 const updatePaymentStatus = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.updatePaymentStatus(req.params.id, req.body);
+  const result = await PaymentService.updatePaymentStatus(
+    req.params.id,
+    req.body
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -72,16 +92,48 @@ const deletePayment = catchAsync(async (req: Request, res: Response) => {
 });
 
 const stripeWebhook = catchAsync(async (req: Request, res: Response) => {
-  const paymentIntentId = req.body.data?.object?.id;
-  const result = await PaymentService.handleStripeWebhook(paymentIntentId);
+  const sig = req.headers["stripe-signature"] as string;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: result.message,
-    data: null,
-  });
+  let event: Stripe.Event;
+
+  try {
+    if (webhookSecret) {
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } else {
+      event = req.body;
+    }
+
+    const result = await PaymentService.handleStripeWebhook(event);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: result.message,
+      data: null,
+    });
+  } catch (err: any) {
+    logger.error("Webhook signature verification failed:", err.message);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 });
+
+const verifyPayment = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const { paymentIntentId } = req.body;
+    const result = await PaymentService.verifyPayment(
+      paymentIntentId,
+      req.user as IAuthUser
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Payment verified successfully!",
+      data: result,
+    });
+  }
+);
 
 export const PaymentController = {
   createPayment,
@@ -90,4 +142,5 @@ export const PaymentController = {
   updatePaymentStatus,
   deletePayment,
   stripeWebhook,
+  verifyPayment,
 };

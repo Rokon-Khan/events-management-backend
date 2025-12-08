@@ -12,7 +12,14 @@ const updatePaymentStatus = z.object({
   }),
 });
 
+const verifyPayment = z.object({
+  body: z.object({
+    paymentIntentId: z.string().min(1, "Payment Intent ID is required"),
+  }),
+});
+
 export const PaymentValidation = {
   createPayment,
   updatePaymentStatus,
+  verifyPayment,
 };

@@ -14,6 +14,13 @@ router.post(
   PaymentController.createPayment
 );
 
+router.post(
+  "/verify",
+  auth(UserRole.USER, UserRole.HOST),
+  validateRequest(PaymentValidation.verifyPayment),
+  PaymentController.verifyPayment
+);
+
 router.get(
   "/",
   auth(UserRole.ADMIN, UserRole.HOST),
@@ -22,7 +29,7 @@ router.get(
 
 router.get(
   "/:id",
-  auth(UserRole.ADMIN, UserRole.HOST),
+  auth(UserRole.ADMIN, UserRole.HOST, UserRole.USER),
   PaymentController.getPaymentById
 );
 

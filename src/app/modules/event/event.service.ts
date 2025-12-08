@@ -212,6 +212,13 @@ const participateInEvent = async (eventId: string, userId: string) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Event not found!");
   }
 
+  if (event.joiningFee > 0) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "This event requires payment. Please use the payment endpoint."
+    );
+  }
+
   if (
     !([EventStatus.OPEN, EventStatus.ONGOING] as EventStatus[]).includes(
       event.status
