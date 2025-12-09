@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, UserStatus } from "@prisma/client";
+import { Prisma, PrismaClient, UserRole, UserStatus } from "@prisma/client";
 import { Request } from "express";
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
@@ -84,6 +84,121 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       total,
     },
     data: result,
+  };
+};
+
+const getAllHosts = async (params: any, options: IPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+
+  const result = await prisma.user.findMany({
+    where: {
+      role: UserRole.HOST,
+      isDeleted: false,
+    },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      email: true,
+      fullName: true,
+      phoneNumber: true,
+      profilePhoto: true,
+      address: true,
+      bio: true,
+      interests: true,
+      role: true,
+      gender: true,
+      dateOfBirth: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
+      reviewCount: true,
+      status: true,
+      isEmailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+      events: {
+        select: { id: true },
+      },
+    },
+  });
+
+  const hostsWithRating = await Promise.all(
+    result.map(async (host) => {
+      const eventIds = host.events.map((e) => e.id);
+      const reviews = await prisma.review.findMany({
+        where: { eventId: { in: eventIds } },
+        select: { rating: true },
+      });
+
+      const averageRating =
+        reviews.length > 0
+          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          : 0;
+
+      const { events, ...hostData } = host;
+      return {
+        ...hostData,
+        averageRating: Number(averageRating.toFixed(2)),
+      };
+    })
+  );
+
+  const total = await prisma.user.count({
+    where: { role: UserRole.HOST, isDeleted: false },
+  });
+
+  return {
+    meta: { page, limit, total },
+    data: hostsWithRating,
+  };
+};
+
+const getAllUsers = async (params: any, options: IPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+
+  const result = await prisma.user.findMany({
+    where: {
+      role: UserRole.USER,
+      isDeleted: false,
+    },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      email: true,
+      fullName: true,
+      phoneNumber: true,
+      profilePhoto: true,
+      address: true,
+      bio: true,
+      interests: true,
+      role: true,
+      gender: true,
+      dateOfBirth: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
+      reviewCount: true,
+      status: true,
+      isEmailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  const usersWithJoinedEvents = result.map((user) => ({
+    ...user,
+    joinedTotalEvents: user.pertcipatedEvents,
+  }));
+
+  const total = await prisma.user.count({
+    where: { role: UserRole.USER, isDeleted: false },
+  });
+
+  return {
+    meta: { page, limit, total },
+    data: usersWithJoinedEvents,
   };
 };
 
@@ -252,6 +367,8 @@ const getUserById = async (id: string) => {
 
 export const userService = {
   getAllFromDB,
+  getAllHosts,
+  getAllUsers,
   changeProfileStatus,
   getMyProfile,
   updateMyProfile,

@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Event Management API",
+    "name": "Event Management API Version 1.0.0",
     "description": "Complete API collection for Event Management System",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -224,6 +224,60 @@
               "raw": "{{baseUrl}}/user?page=1&limit=10",
               "host": ["{{baseUrl}}"],
               "path": ["user"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Hosts (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/hosts?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "hosts"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Users Only (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "users"],
               "query": [
                 {
                   "key": "page",
@@ -810,6 +864,74 @@
               "raw": "{{baseUrl}}/become-host/:id",
               "host": ["{{baseUrl}}"],
               "path": ["become-host", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Admin Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "admin", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Host Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/host/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "host", "stats"]
+            }
+          }
+        },
+        {
+          "name": "User Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/user/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "user", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Host Public Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reports/host/public-stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "host", "public-stats"]
             }
           }
         }

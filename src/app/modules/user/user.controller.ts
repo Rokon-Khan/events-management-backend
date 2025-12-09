@@ -24,6 +24,36 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllHosts = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, []);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await userService.getAllHosts(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Hosts retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, []);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await userService.getAllUsers(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Users retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 const changeProfileStatus = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await userService.changeProfileStatus(id, req.body);
@@ -80,6 +110,8 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
 
 export const userController = {
   getAllFromDB,
+  getAllHosts,
+  getAllUsers,
   changeProfileStatus,
   getMyProfile,
   updateMyProfile,
