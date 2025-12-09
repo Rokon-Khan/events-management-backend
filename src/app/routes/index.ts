@@ -1,5 +1,6 @@
 import express from "express";
 import { AuthRoutes } from "../modules/auth/auth.routes";
+import { becomeHostRoutes } from "../modules/becomeHost/becomeHost.routes";
 import { eventRoutes } from "../modules/event/event.routes";
 import { PaymentRoutes } from "../modules/payments/payment.routes";
 import { reviewRoutes } from "../modules/review/review.routes";
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: "/review",
     route: reviewRoutes,
+  },
+  {
+    path: "/become-host",
+    route: becomeHostRoutes,
   },
   {
     path: "/payments",

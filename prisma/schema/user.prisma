@@ -11,7 +11,7 @@ model User {
     gender             Gender?
     dateOfBirth        DateTime?
     pertcipatedEvents  Int        @default(0)
-    hostedEvents      Int        @default(0)
+    hostedEvents       Int        @default(0)
     reviewCount        Int        @default(0)
     role               UserRole   @default(USER)
     status             UserStatus @default(ACTIVE)
@@ -22,5 +22,6 @@ model User {
     events            Event[]
     reviews           Review[]
     payments          Payment[]
+    becomeHostRequest becomeHost?
     @@map("users")
 }

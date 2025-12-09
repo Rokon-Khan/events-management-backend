@@ -675,6 +675,147 @@
       ]
     },
     {
+      "name": "Become Host",
+      "item": [
+        {
+          "name": "Create Become Host Request (User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostExperience\": \"5 years of event management\",\n  \"typeOfEvents\": \"Tech conferences, workshops\",\n  \"whyHost\": \"Passionate about bringing people together\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/become-host",
+              "host": ["{{baseUrl}}"],
+              "path": ["become-host"]
+            }
+          }
+        },
+        {
+          "name": "Create Host by Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user-uuid\",\n  \"hostExperience\": \"10 years experience\",\n  \"typeOfEvents\": \"All types\",\n  \"whyHost\": \"Admin approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/become-host/admin/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["become-host", "admin", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get All Become Host Requests (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/become-host?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["become-host"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Become Host Request By ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/become-host/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["become-host", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Approve Host Request (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approveHost\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/become-host/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["become-host", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Become Host Request (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/become-host/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["become-host", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Payment",
       "item": [
         {
