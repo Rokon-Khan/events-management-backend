@@ -20,6 +20,14 @@ router.post(
 
 router.get("/", eventController.getAllEvents);
 
+router.get("/stats", auth(UserRole.ADMIN), eventController.getEventStats);
+
+router.get("/upcoming", eventController.getUpcomingEvents);
+
+router.get("/ongoing", eventController.getOngoingEvents);
+
+router.get("/completed", eventController.getCompletedEvents);
+
 router.get("/:id", eventController.getEventById);
 
 router.patch(

@@ -90,6 +90,56 @@ const participateInEvent = catchAsync(
   }
 );
 
+const getUpcomingEvents = catchAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await eventService.getEventsByStatus("UPCOMING", options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Upcoming events retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getOngoingEvents = catchAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await eventService.getEventsByStatus("ONGOING", options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Ongoing events retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getCompletedEvents = catchAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await eventService.getEventsByStatus("COMPLETED", options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Completed events retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getEventStats = catchAsync(async (req: Request, res: Response) => {
+  const result = await eventService.getEventStats();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Event stats retrieved successfully!",
+    data: result,
+  });
+});
+
 export const eventController = {
   createEvent,
   getAllEvents,
@@ -97,4 +147,8 @@ export const eventController = {
   updateEvent,
   deleteEvent,
   participateInEvent,
+  getUpcomingEvents,
+  getOngoingEvents,
+  getCompletedEvents,
+  getEventStats,
 };

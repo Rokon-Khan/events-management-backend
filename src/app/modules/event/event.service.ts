@@ -257,6 +257,52 @@ const participateInEvent = async (eventId: string, userId: string) => {
   return updatedEvent;
 };
 
+const getEventsByStatus = async (status: EventStatus, options: IPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+
+  const result = await prisma.event.findMany({
+    where: { status },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          profilePhoto: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.event.count({ where: { status } });
+
+  return {
+    meta: { page, limit, total },
+    data: result,
+  };
+};
+
+const getEventStats = async () => {
+  const totalEvents = await prisma.event.count();
+  const totalOpenEvents = await prisma.event.count({ where: { status: EventStatus.OPEN } });
+  const totalFullEvents = await prisma.event.count({ where: { status: EventStatus.FULL } });
+  const totalCompletedEvents = await prisma.event.count({ where: { status: EventStatus.COMPLETED } });
+  const totalUpcomingEvents = await prisma.event.count({ where: { status: EventStatus.UPCOMING } });
+  const totalOngoingEvents = await prisma.event.count({ where: { status: EventStatus.ONGOING } });
+
+  return {
+    totalEvents,
+    totalOpenEvents,
+    totalFullEvents,
+    totalCompletedEvents,
+    totalUpcomingEvents,
+    totalOngoingEvents,
+  };
+};
+
 const checkAndUpdateEventStatus = async () => {
   const now = new Date();
 
@@ -278,5 +324,7 @@ export const eventService = {
   updateEvent,
   deleteEvent,
   participateInEvent,
+  getEventsByStatus,
+  getEventStats,
   checkAndUpdateEventStatus,
 };

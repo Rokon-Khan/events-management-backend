@@ -522,6 +522,89 @@
           }
         },
         {
+          "name": "Get Event Stats (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Get Upcoming Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/event/upcoming?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "upcoming"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Ongoing Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/event/ongoing?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "ongoing"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Completed Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/event/completed?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "completed"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
           "name": "Get Event By ID",
           "request": {
             "method": "GET",
@@ -932,6 +1015,23 @@
               "raw": "{{baseUrl}}/reports/host/public-stats",
               "host": ["{{baseUrl}}"],
               "path": ["reports", "host", "public-stats"]
+            }
+          }
+        },
+        {
+          "name": "Payment Stats (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/payments/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "payments", "stats"]
             }
           }
         }

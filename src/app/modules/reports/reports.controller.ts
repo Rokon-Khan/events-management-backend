@@ -53,9 +53,21 @@ const getHostStatsPublic = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getPaymentStats = catchAsync(async (req: Request, res: Response) => {
+  const result = await reportsService.getPaymentStats();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Payment stats retrieved successfully!",
+    data: result,
+  });
+});
+
 export const reportsController = {
   getAdminDashboardStats,
   getHostStats,
   getUserStats,
   getHostStatsPublic,
+  getPaymentStats,
 };

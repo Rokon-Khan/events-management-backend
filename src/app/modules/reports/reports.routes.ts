@@ -25,4 +25,10 @@ router.get(
 
 router.get("/host/public-stats", reportsController.getHostStatsPublic);
 
+router.get(
+  "/payments/stats",
+  auth(UserRole.ADMIN),
+  reportsController.getPaymentStats
+);
+
 export const reportsRoutes = router;
