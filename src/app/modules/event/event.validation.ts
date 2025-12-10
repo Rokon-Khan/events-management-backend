@@ -56,6 +56,7 @@ const updateEvent = z.object({
         "COMPLETED",
         "CANCELLED",
         "CLOSED",
+        "PENDING",
       ])
       .optional(),
   }),

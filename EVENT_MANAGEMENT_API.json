@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Event Management API Version 1.0.0",
+    "name": "Event Management API Version 1.0.1",
     "description": "Complete API collection for Event Management System",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
