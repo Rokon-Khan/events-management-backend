@@ -28,6 +28,8 @@ router.get("/ongoing", eventController.getOngoingEvents);
 
 router.get("/completed", eventController.getCompletedEvents);
 
+router.get("/my-participated-events", auth(UserRole.USER), eventController.getMyParticipatedEvents);
+
 router.get("/:id", eventController.getEventById);
 
 router.patch(

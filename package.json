@@ -16,6 +16,7 @@
     "migrate": "npx prisma migrate dev",
     "migrate:reset": "npx prisma migrate reset",
     "seed": "ts-node-dev ./src/app/utils/seed.ts",
+    "seed:users": "ts-node-dev ./src/app/utils/seedUsers.ts",
     "start": "node dist/server.js"
   },
   "dependencies": {

@@ -140,6 +140,19 @@ const getEventStats = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMyParticipatedEvents = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await eventService.getMyParticipatedEvents(req.user!.id, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "My participated events retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const eventController = {
   createEvent,
   getAllEvents,
@@ -151,4 +164,5 @@ export const eventController = {
   getOngoingEvents,
   getCompletedEvents,
   getEventStats,
+  getMyParticipatedEvents,
 };
