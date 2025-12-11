@@ -7,19 +7,46 @@ import logger from "./logger";
 export const updateExpiredEvents = async () => {
   try {
     const now = new Date();
+    const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-    const result = await prisma.event.updateMany({
+    const events = await prisma.event.findMany({
       where: {
-        date: { lt: now },
         status: {
-          in: [EventStatus.OPEN, EventStatus.ONGOING, EventStatus.UPCOMING],
+          in: [EventStatus.OPEN, EventStatus.ONGOING, EventStatus.UPCOMING, EventStatus.FULL],
         },
       },
-      data: { status: EventStatus.CLOSED },
     });
 
-    if (result.count > 0) {
-      logger.info(`Event statuses updated: ${result.count} events closed`);
+    let updatedCount = 0;
+
+    for (const event of events) {
+      let newStatus = event.status;
+
+      if (event.date < now) {
+        newStatus = event.currentParticipants >= event.minParticipants 
+          ? EventStatus.COMPLETED 
+          : EventStatus.CANCELLED;
+      } else if (event.currentParticipants >= event.maxParticipants) {
+        newStatus = EventStatus.FULL;
+      } else if (event.joiningFee === 0) {
+        newStatus = EventStatus.OPEN;
+      } else if (event.date > oneWeekFromNow) {
+        newStatus = EventStatus.UPCOMING;
+      } else {
+        newStatus = EventStatus.ONGOING;
+      }
+
+      if (newStatus !== event.status) {
+        await prisma.event.update({
+          where: { id: event.id },
+          data: { status: newStatus },
+        });
+        updatedCount++;
+      }
+    }
+
+    if (updatedCount > 0) {
+      logger.info(`Event statuses updated: ${updatedCount} events`);
     }
   } catch (error: any) {
     logger.error("Error updating event statuses:", error);
