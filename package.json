@@ -19,6 +19,7 @@
     "seed:users": "ts-node-dev ./src/app/utils/seedUsers.ts",
     "seed:hosts": "ts-node-dev ./src/app/utils/seedHosts.ts",
     "seed:events": "ts-node-dev ./src/app/utils/seedEvents.ts",
+    "seed:reviews": "ts-node-dev ./src/app/utils/seedReviews.ts",
     "start": "node dist/server.js"
   },
   "dependencies": {

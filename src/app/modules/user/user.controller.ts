@@ -108,12 +108,24 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getPublicProfile = catchAsync(async (req: Request, res: Response) => {
+  const result = await userService.getPublicProfile(req.params.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Public profile data fetched!",
+    data: result,
+  });
+});
+
 export const userController = {
   getAllFromDB,
   getAllHosts,
   getAllUsers,
   changeProfileStatus,
   getMyProfile,
+  getPublicProfile,
   updateMyProfile,
   getUserById,
 };

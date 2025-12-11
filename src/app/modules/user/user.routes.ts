@@ -14,6 +14,8 @@ router.get("/hosts", auth(UserRole.ADMIN), userController.getAllHosts);
 
 router.get("/users", auth(UserRole.ADMIN), userController.getAllUsers);
 
+router.get("/public-profile/:id", userController.getPublicProfile);
+
 router.get(
   "/me",
   auth(UserRole.ADMIN, UserRole.USER, UserRole.HOST),

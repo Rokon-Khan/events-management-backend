@@ -365,12 +365,42 @@ const getUserById = async (id: string) => {
   return user;
 };
 
+const getPublicProfile = async (id: string) => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id,
+      isDeleted: false,
+    },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      profilePhoto: true,
+      address: true,
+      bio: true,
+      interests: true,
+      role: true,
+      pertcipatedEvents: true,
+      hostedEvents: true,
+      reviewCount: true,
+      createdAt: true,
+    },
+  });
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  return result;
+};
+
 export const userService = {
   getAllFromDB,
   getAllHosts,
   getAllUsers,
   changeProfileStatus,
   getMyProfile,
+  getPublicProfile,
   updateMyProfile,
   getUserById,
 };

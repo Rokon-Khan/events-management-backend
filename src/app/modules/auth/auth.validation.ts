@@ -3,8 +3,14 @@ import { z } from "zod";
 const registration = z.object({
   body: z.object({
     email: z.string().email("Invalid email format"),
-    fullName: z.string().min(1, "Full name is required"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    fullName: z
+      .string()
+      .min(1, "Full name is required")
+      .max(32, "Full name is too long"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(24, "Password is too long"),
     role: z.enum(["USER", "HOST", "ADMIN"]).optional(),
   }),
 });
@@ -28,7 +34,8 @@ const changePassword = z.object({
     oldPassword: z.string().min(1, "Old password is required"),
     newPassword: z
       .string()
-      .min(6, "New password must be at least 6 characters"),
+      .min(6, "New password must be at least 6 characters")
+      .max(24, "New password is too long"),
   }),
 });
 
