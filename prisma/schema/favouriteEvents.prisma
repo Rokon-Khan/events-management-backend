@@ -1,0 +1,9 @@
+model favouriteEvents {
+    id        String   @id @default(uuid())
+    userId    String
+    eventId   String
+    user      User     @relation(fields: [userId], references: [id])
+    event     Event    @relation(fields: [eventId], references: [id])
+    createdAt DateTime @default(now())
+    @@map("favourite_events")
+}

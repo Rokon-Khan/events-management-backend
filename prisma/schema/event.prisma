@@ -17,5 +17,6 @@ model Event {
     userId      String
     user        User     @relation(fields: [userId], references: [id])
     payments    Payment[]
+    favouriteEvents favouriteEvents[]
     @@map("events")
 }
