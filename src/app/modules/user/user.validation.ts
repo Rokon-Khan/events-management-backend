@@ -12,12 +12,9 @@ const updateProfile = z.object({
 });
 
 const updateStatus = z.object({
-  status: z.enum([
-    UserStatus.ACTIVE,
-    UserStatus.INACTIVE,
-    UserStatus.BLOCKED,
-    UserStatus.DELETED,
-  ]),
+  body: z.object({
+    status: z.enum(["ACTIVE", "INACTIVE", "BLOCKED", "DELETED"]),
+  }),
 });
 
 export const userValidation = {
