@@ -18,6 +18,10 @@ router.get("/", reviewController.getAllReviews);
 
 router.get("/host/:hostId/stats", reviewController.getHostReviewStats);
 
+router.get("/host-my-reviews", auth(UserRole.HOST), reviewController.getHostMyReviews);
+
+router.get("/host-reviews/:eventId", reviewController.getHostReviewsByEventId);
+
 router.get("/:id", reviewController.getReviewById);
 
 router.patch(

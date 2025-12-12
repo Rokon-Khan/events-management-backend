@@ -238,6 +238,81 @@ const getHostReviewStats = async (hostId: string) => {
   };
 };
 
+const getHostMyReviews = async (hostId: string, options: IPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+
+  const events = await prisma.event.findMany({
+    where: { userId: hostId },
+    select: { id: true },
+  });
+
+  const eventIds = events.map((e) => e.id);
+
+  const result = await prisma.review.findMany({
+    where: { eventId: { in: eventIds } },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          profilePhoto: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.review.count({
+    where: { eventId: { in: eventIds } },
+  });
+
+  return {
+    meta: { page, limit, total },
+    data: result,
+  };
+};
+
+const getHostReviewsByEventId = async (eventId: string, options: IPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+  });
+
+  if (!event) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Event not found!");
+  }
+
+  const result = await prisma.review.findMany({
+    where: { eventId },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          profilePhoto: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.review.count({
+    where: { eventId },
+  });
+
+  return {
+    meta: { page, limit, total },
+    data: result,
+  };
+};
+
 export const reviewService = {
   createReview,
   getAllReviews,
@@ -245,4 +320,6 @@ export const reviewService = {
   updateReview,
   deleteReview,
   getHostReviewStats,
+  getHostMyReviews,
+  getHostReviewsByEventId,
 };

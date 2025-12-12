@@ -87,6 +87,32 @@ const getHostReviewStats = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getHostMyReviews = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await reviewService.getHostMyReviews(req.user!.id, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Host reviews retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getHostReviewsByEventId = catchAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await reviewService.getHostReviewsByEventId(req.params.eventId, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Event reviews retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const reviewController = {
   createReview,
   getAllReviews,
@@ -94,4 +120,6 @@ export const reviewController = {
   updateReview,
   deleteReview,
   getHostReviewStats,
+  getHostMyReviews,
+  getHostReviewsByEventId,
 };
