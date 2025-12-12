@@ -153,6 +153,17 @@ const getMyParticipatedEvents = catchAsync(async (req: Request & { user?: IAuthU
   });
 });
 
+const getMyParticipatedEventById = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
+  const result = await eventService.getMyParticipatedEventById(req.user!.id, req.params.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "My participated event retrieved successfully!",
+    data: result,
+  });
+});
+
 export const eventController = {
   createEvent,
   getAllEvents,
@@ -165,4 +176,5 @@ export const eventController = {
   getCompletedEvents,
   getEventStats,
   getMyParticipatedEvents,
+  getMyParticipatedEventById,
 };

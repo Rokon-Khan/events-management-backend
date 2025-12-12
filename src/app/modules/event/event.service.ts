@@ -369,6 +369,36 @@ const getMyParticipatedEvents = async (
   };
 };
 
+const getMyParticipatedEventById = async (userId: string, eventId: string) => {
+  const event = await prisma.event.findFirst({
+    where: {
+      id: eventId,
+      payments: {
+        some: {
+          userId: userId,
+          paymentStatus: "COMPLETED",
+        },
+      },
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          profilePhoto: true,
+        },
+      },
+    },
+  });
+
+  if (!event) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Event not found or you are not a participant!");
+  }
+
+  return event;
+};
+
 const checkAndUpdateEventStatus = async () => {
   const now = new Date();
 
@@ -393,5 +423,6 @@ export const eventService = {
   getEventsByStatus,
   getEventStats,
   getMyParticipatedEvents,
+  getMyParticipatedEventById,
   checkAndUpdateEventStatus,
 };

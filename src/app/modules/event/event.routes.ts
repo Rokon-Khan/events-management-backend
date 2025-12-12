@@ -30,6 +30,8 @@ router.get("/completed", eventController.getCompletedEvents);
 
 router.get("/my-participated-events", auth(UserRole.USER), eventController.getMyParticipatedEvents);
 
+router.get("/my-participated-events/:id", auth(UserRole.USER), eventController.getMyParticipatedEventById);
+
 router.get("/:id", eventController.getEventById);
 
 router.patch(
