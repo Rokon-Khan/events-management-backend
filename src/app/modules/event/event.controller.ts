@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import { IAuthUser } from "../../interfaces/common";
 import catchAsync from "../../shared/catchAsync";
 import pick from "../../shared/pick";
 import sendResponse from "../../shared/sendResponse";
-import { IAuthUser } from "../../interfaces/common";
 import { eventFilterableFields } from "./event.constant";
 import { eventService } from "./event.service";
 
@@ -140,29 +140,58 @@ const getEventStats = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getMyParticipatedEvents = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
-  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const result = await eventService.getMyParticipatedEvents(req.user!.id, options);
+const getMyParticipatedEvents = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    const result = await eventService.getMyParticipatedEvents(
+      req.user!.id,
+      options
+    );
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "My participated events retrieved successfully!",
-    meta: result.meta,
-    data: result.data,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "My participated events retrieved successfully!",
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
 
-const getMyParticipatedEventById = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
-  const result = await eventService.getMyParticipatedEventById(req.user!.id, req.params.id);
+const getMyParticipatedEventById = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const result = await eventService.getMyParticipatedEventById(
+      req.user!.id,
+      req.params.id
+    );
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "My participated event retrieved successfully!",
-    data: result,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "My participated event retrieved successfully!",
+      data: result,
+    });
+  }
+);
+
+const getMyCreatedEvents = catchAsync(
+  async (req: Request & { user?: IAuthUser }, res: Response) => {
+    const filters = pick(req.query, eventFilterableFields);
+    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    const result = await eventService.getMyCreatedEvents(
+      req.user!.id,
+      filters,
+      options
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "My created events retrieved successfully!",
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
 
 export const eventController = {
   createEvent,
@@ -177,4 +206,5 @@ export const eventController = {
   getEventStats,
   getMyParticipatedEvents,
   getMyParticipatedEventById,
+  getMyCreatedEvents,
 };

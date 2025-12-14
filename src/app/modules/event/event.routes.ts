@@ -28,9 +28,23 @@ router.get("/ongoing", eventController.getOngoingEvents);
 
 router.get("/completed", eventController.getCompletedEvents);
 
-router.get("/my-participated-events", auth(UserRole.USER), eventController.getMyParticipatedEvents);
+router.get(
+  "/my-participated-events",
+  auth(UserRole.USER),
+  eventController.getMyParticipatedEvents
+);
 
-router.get("/my-participated-events/:id", auth(UserRole.USER), eventController.getMyParticipatedEventById);
+router.get(
+  "/my-created-events",
+  auth(UserRole.HOST),
+  eventController.getMyCreatedEvents
+);
+
+router.get(
+  "/my-participated-events/:id",
+  auth(UserRole.USER),
+  eventController.getMyParticipatedEventById
+);
 
 router.get("/:id", eventController.getEventById);
 
@@ -43,11 +57,7 @@ router.patch(
   eventController.updateEvent
 );
 
-router.delete(
-  "/:id",
-  auth(UserRole.ADMIN),
-  eventController.deleteEvent
-);
+router.delete("/:id", auth(UserRole.ADMIN), eventController.deleteEvent);
 
 router.post(
   "/:id/participate",

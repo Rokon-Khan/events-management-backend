@@ -393,7 +393,10 @@ const getMyParticipatedEventById = async (userId: string, eventId: string) => {
   });
 
   if (!event) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Event not found or you are not a participant!");
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "Event not found or you are not a participant!"
+    );
   }
 
   return event;
@@ -413,6 +416,61 @@ const checkAndUpdateEventStatus = async () => {
   });
 };
 
+const getMyCreatedEvents = async (
+  userId: string,
+  params: any,
+  options: IPaginationOptions
+) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+  const { searchTerm, ...filterData } = params;
+  const andConditions: Prisma.EventWhereInput[] = [{ userId }];
+  if (searchTerm) {
+    andConditions.push({
+      OR: eventSearchableFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+  const whereConditions: Prisma.EventWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+  const result = await prisma.event.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : { createdAt: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          profilePhoto: true,
+        },
+      },
+    },
+  });
+  const total = await prisma.event.count({ where: whereConditions });
+  return {
+    meta: { page, limit, total },
+    data: result,
+  };
+};
+
 export const eventService = {
   createEvent,
   getAllEvents,
@@ -425,4 +483,5 @@ export const eventService = {
   getMyParticipatedEvents,
   getMyParticipatedEventById,
   checkAndUpdateEventStatus,
+  getMyCreatedEvents,
 };
